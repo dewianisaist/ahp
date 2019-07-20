@@ -53,9 +53,6 @@
                                 <div class="col-6">
                                     <button type="submit" class="btn btn-primary px-2"><i class="fa fa-btn fa-sign-in"></i> Login</button>
                                 </div>
-                                <div class="col-6 text-right">
-                                    <a class="btn btn-link px-0" href="{{ url('/password/reset') }}">Lupa password?</a>                                    
-                                </div>
                             </div>
                         </form>
                     </div>

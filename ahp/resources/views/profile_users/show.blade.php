@@ -50,16 +50,6 @@
                     {{ $profile_user->email }}
                 </div>
             </div>
-            <div class="col-xs-12 col-sm-12 col-md-12">
-                <div class="form-group">
-                    <strong><dfn>Roles</dfn>:</strong>
-                    @if(!empty($profile_user->roles))
-                        @foreach($profile_user->roles as $v)
-                            <label class="label label-success">{{ $v->display_name }}</label>
-                        @endforeach
-                    @endif
-                </div>
-            </div>
         </div>
     </div>
 </div>

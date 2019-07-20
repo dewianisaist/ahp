@@ -17,15 +17,8 @@ class ProfileUserController extends Controller
      */
     public function show()
     {
-        $role_id = Auth::user()->roleId();
-        
-        if ($role_id != 2) {
-            $profile_user = User::find(Auth::user()->id);
-
-            return view('profile_users.show',compact('profile_user'));
-        } else {
-            return redirect()->route('registrants.index');
-        }
+        $profile_user = User::find(Auth::user()->id);
+        return view('profile_users.show',compact('profile_user'));
     }
 
     /**
@@ -35,15 +28,8 @@ class ProfileUserController extends Controller
      */
     public function edit()
     {
-        $role_id = Auth::user()->roleId();
-            
-        if ($role_id != 2) {
-            $profile_user = User::find(Auth::user()->id);
-
-            return view('profile_users.edit',compact('profile_user'));
-        } else {
-            return redirect()->route('registrants.index');
-        }
+        $profile_user = User::find(Auth::user()->id);
+        return view('profile_users.edit',compact('profile_user'));
     }
 
     /**
