@@ -132,9 +132,9 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Magister Ilmu Komputer Universitas Gadjah Mada</b>
+      <b>Universitas Amikom Yogyakarta</b>
     </div>
-    <strong>Copyright &copy; 2017-2018 Dewi Anisa Istiqomah.</strong>
+    <strong>Copyright &copy; 2019</strong>
   </footer>
 
 </div>
