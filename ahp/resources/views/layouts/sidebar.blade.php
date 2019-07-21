@@ -2,10 +2,6 @@
   <a href="{{ route('manage_alternatives.index') }}"><i class="fa fa-users"></i> <span>Data Pendaftar</span></a>
 </li>
 
-<li {{ substr( \Request::route()->getName(), 0, 11 ) == 'selections.' ? 'class=active' : '' }}>
-  <a href="{{ route('selections.index') }}"><i class="fa fa-balance-scale"></i>  <span>Nilai Seleksi</span></a>
-</li>
-
 <li {{ explode( ".",\Request::route()->getName() )[0] == 'criterias' || 
   explode( ".",\Request::route()->getName() )[0] == 'criteriagroup' 
   ? 'class=active treeview menu-open' : '' }}>
