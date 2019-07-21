@@ -1,5 +1,5 @@
-<li {{ substr( \Request::route()->getName(), 0, 19 ) == 'manage_registrants.' ? 'class=active' : '' }}>
-  <a href="{{ route('manage_registrants.index') }}"><i class="fa fa-users"></i> <span>Data Pendaftar</span></a>
+<li {{ substr( \Request::route()->getName(), 0, 19 ) == 'manage_alternatives.' ? 'class=active' : '' }}>
+  <a href="{{ route('manage_alternatives.index') }}"><i class="fa fa-users"></i> <span>Data Pendaftar</span></a>
 </li>
 
 <li {{ substr( \Request::route()->getName(), 0, 11 ) == 'selections.' ? 'class=active' : '' }}>

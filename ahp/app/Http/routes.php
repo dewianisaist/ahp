@@ -75,9 +75,14 @@ Route::group(['middleware' => ['auth']], function() {
 	Route::patch('preferences/{id}',['as'=>'preferences.update','uses'=>'PreferenceController@update']);
 	Route::delete('preferences/{id}',['as'=>'preferences.destroy','uses'=>'PreferenceController@destroy']);
 
-	//manage_registrants - tidak ada permission
-	Route::get('manage_registrants',['as'=>'manage_registrants.index','uses'=>'ManageRegistrantController@index']);
-	Route::get('manage_registrants/{id}',['as'=>'manage_registrants.show','uses'=>'ManageRegistrantController@show']);
+	//manage_alternatives - fix
+	Route::get('manage_alternatives',['as'=>'manage_alternatives.index','uses'=>'ManageAlternativeController@index']);
+	Route::get('manage_alternatives/create',['as'=>'manage_alternatives.create','uses'=>'ManageAlternativeController@create']);
+	Route::post('manage_alternatives/create',['as'=>'manage_alternatives.store','uses'=>'ManageAlternativeController@store']);
+	Route::get('manage_alternatives/{id}',['as'=>'manage_alternatives.show','uses'=>'ManageAlternativeController@show']);
+	Route::get('manage_alternatives/{id}/edit',['as'=>'manage_alternatives.edit','uses'=>'ManageAlternativeController@edit']);
+	Route::patch('manage_alternatives/{id}',['as'=>'manage_alternatives.update','uses'=>'ManageAlternativeController@update']);
+	Route::delete('manage_alternatives/{id}',['as'=>'manage_alternatives.destroy','uses'=>'ManageAlternativeController@destroy']);
 	
 	//auth_role - tidak ada permission
 	Route::get('authrole',['as'=>'authrole.index','uses'=>'AuthRoleController@index']);
