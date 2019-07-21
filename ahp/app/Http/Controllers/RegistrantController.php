@@ -22,18 +22,13 @@ class RegistrantController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        $role_id = Auth::user()->roleId();
         $user = User::with('registrant', 'registrant.upload')->find(Auth::user()->id);
 
-        if ($role_id == 2) {
-            if ($user->registrant == null) {
-                return redirect()->route('registrants.edit')
-                                ->with('failed','Silahkan lengkapi data diri Anda dahulu.');
-            } else {
-                return view('registrants.index',compact('user'));
-            }
+        if ($user->registrant == null) {
+            return redirect()->route('registrants.edit')
+                            ->with('failed','Silahkan lengkapi data diri Anda dahulu.');
         } else {
-            return redirect()->route('profile_users.show');
+            return view('registrants.index',compact('user'));
         }
     }
 
@@ -44,14 +39,10 @@ class RegistrantController extends Controller
      */
     public function edit()
     {
-        $role_id = Auth::user()->roleId();
 
-        if ($role_id == 2) {
-            $user = User::with('registrant', 'registrant.upload')->find(Auth::user()->id);
-            return view('registrants.edit',compact('user'));
-        } else {
-            return redirect()->route('profile_users.show');
-        }
+        $user = User::with('registrant', 'registrant.upload')->find(Auth::user()->id);
+        
+        return view('registrants.edit',compact('user'));
     }
 
     /**

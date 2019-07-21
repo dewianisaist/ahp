@@ -25,29 +25,23 @@ class ResultSelectionController extends Controller
      */
     public function index(Request $request)
     {
-        $role_id = Auth::user()->roleId();
+        $data = Selection::select('selections.*', 'users.name AS name_registrant', 'selection_schedules.date', 
+                                    'selection_schedules.time', 'sub_vocationals.name AS name_sub_vocational')
+                                ->join('registrations', 'registrations.id', '=', 'selections.registration_id')
+                                ->join('registrants', 'registrants.id', '=', 'registrations.registrant_id')
+                                ->join('users', 'users.id', '=', 'registrants.user_id')
+                                ->join('selection_schedules', 'selection_schedules.id', '=', 'selections.selection_schedule_id')
+                                ->join('sub_vocationals', 'sub_vocationals.id', '=', 'selection_schedules.sub_vocational_id')
+                                ->where(function($query){
+                                    $query->whereNull('selections.status')
+                                            ->orWhere('selections.status', '=', '');
+                                })
+                                ->orderBy('selections.id','DESC')
+                                ->paginate(10);
+        // return $data;
 
-        if ($role_id == 3) {
-            $data = Selection::select('selections.*', 'users.name AS name_registrant', 'selection_schedules.date', 
-                                        'selection_schedules.time', 'sub_vocationals.name AS name_sub_vocational')
-                                    ->join('registrations', 'registrations.id', '=', 'selections.registration_id')
-                                    ->join('registrants', 'registrants.id', '=', 'registrations.registrant_id')
-                                    ->join('users', 'users.id', '=', 'registrants.user_id')
-                                    ->join('selection_schedules', 'selection_schedules.id', '=', 'selections.selection_schedule_id')
-                                    ->join('sub_vocationals', 'sub_vocationals.id', '=', 'selection_schedules.sub_vocational_id')
-                                    ->where(function($query){
-                                        $query->whereNull('selections.status')
-                                              ->orWhere('selections.status', '=', '');
-                                    })
-                                    ->orderBy('selections.id','DESC')
-                                    ->paginate(10);
-            // return $data;
-
-            return view('result_selection.index',compact('data', 'result_selection'))
-                        ->with('i', ($request->input('page', 1) - 1) * 10);
-        } else {
-            return redirect()->route('profile_users.show');
-        }
+        return view('result_selection.index',compact('data', 'result_selection'))
+                    ->with('i', ($request->input('page', 1) - 1) * 10);
     }
 
     /**
@@ -58,87 +52,81 @@ class ResultSelectionController extends Controller
      */
     public function assessment($id)
     {
-        $role_id = Auth::user()->roleId();
+        $i = 0;
+        $j = 0;
 
-        if ($role_id == 3) {
-            $i = 0;
-            $j = 0;
+        $data = Selection::select('selections.id AS ID_SELECTION', 'users.id AS ID_USER', 'registrants.id AS ID_REGISTRANT',
+                            'users.*', 'registrants.*', 'selections.*')
+                            ->join('registrations', 'registrations.id', '=', 'selections.registration_id')
+                            ->join('registrants', 'registrants.id', '=', 'registrations.registrant_id')
+                            ->join('users', 'users.id', '=', 'registrants.user_id')
+                            ->where('selections.id', '=', $id)
+                            ->first();
+        // return $data;
 
-            $data = Selection::select('selections.id AS ID_SELECTION', 'users.id AS ID_USER', 'registrants.id AS ID_REGISTRANT',
-                                'users.*', 'registrants.*', 'selections.*')
-                                ->join('registrations', 'registrations.id', '=', 'selections.registration_id')
-                                ->join('registrants', 'registrants.id', '=', 'registrations.registrant_id')
-                                ->join('users', 'users.id', '=', 'registrants.user_id')
-                                ->where('selections.id', '=', $id)
-                                ->first();
-            // return $data;
+        $date_birth = Carbon\Carbon::parse($data->date_birth);
+        $age = Carbon\Carbon::createFromDate($date_birth->year, $date_birth->month, $date_birth->day)->age;
+        // return $age;
 
-            $date_birth = Carbon\Carbon::parse($data->date_birth);
-            $age = Carbon\Carbon::createFromDate($date_birth->year, $date_birth->month, $date_birth->day)->age;
-            // return $age;
+        $check_result = ResultSelection::with('selection')
+                                            ->where('selection_id', '=', $data->ID_SELECTION)
+                                            ->first();
+        // return $check_result;
 
-            $check_result = ResultSelection::with('selection')
-                                                ->where('selection_id', '=', $data->ID_SELECTION)
+        $educational_background = EducationalBackground::with('education')
+                                                        ->where('registrant_id', '=', $data->ID_REGISTRANT)
+                                                        ->orderBy('education_id','DESC')
+                                                        ->get();
+        // return $educational_background;
+
+        $course_experience = CourseExperience::with('course')
+                                                ->where('registrant_id', '=', $data->ID_REGISTRANT)
+                                                ->get();
+        // return $course_experience;
+
+        $upload = Upload::where('registrant_id', '=', $data->ID_REGISTRANT)->first();
+        // return $upload;
+
+        $registration = Registration::select('registrations.id AS ID_REGISTRATION', 'selections.id AS ID_SELECTION', 
+                                        'selection_schedules.id AS ID_SSCHEDULE', 'sub_vocationals.id AS ID_SUBVOC',
+                                        'registrations.*', 'selections.*', 'selection_schedules.*', 'sub_vocationals.*')
+                                        ->join('selections', 'selections.registration_id', '=', 'registrations.id')
+                                        ->join('selection_schedules', 'selection_schedules.id', '=', 'selections.selection_schedule_id')
+                                        ->join('sub_vocationals', 'sub_vocationals.id', '=', 'selection_schedules.sub_vocational_id')
+                                        ->where('registrant_id', '=', $data->ID_REGISTRANT)
+                                        ->orderBy('ID_SELECTION','DESC')
+                                        ->get();
+        // return $registration;
+
+        $criterias = Criteria::where('step', '=', '2')
+                                ->where('status', '=', '1')
+                                ->where('description', '<>', null)
+                                ->whereNotIn('id', function($query){
+                                    $query->select('criteria_id')
+                                    ->from(with(new Choice)->getTable())
+                                    ->where('suggestion', 1);
+                                })
+                                ->orderBy('id','DESC')->get();
+        
+        $return_data = array();
+        // return $data->ID_SELECTION;
+
+        foreach ($criterias as $criteria) {
+            $single_data = array();
+            $single_data["criteria"] = $criteria;
+            $result_selection = ResultSelection::where('selection_id', '=', $data->ID_SELECTION)
+                                                ->where('criteria_id', '=', $criteria->id)
                                                 ->first();
-            // return $check_result;
-
-            $educational_background = EducationalBackground::with('education')
-                                                            ->where('registrant_id', '=', $data->ID_REGISTRANT)
-                                                            ->orderBy('education_id','DESC')
-                                                            ->get();
-            // return $educational_background;
-
-            $course_experience = CourseExperience::with('course')
-                                                    ->where('registrant_id', '=', $data->ID_REGISTRANT)
-                                                    ->get();
-            // return $course_experience;
-
-            $upload = Upload::where('registrant_id', '=', $data->ID_REGISTRANT)->first();
-            // return $upload;
-
-            $registration = Registration::select('registrations.id AS ID_REGISTRATION', 'selections.id AS ID_SELECTION', 
-                                            'selection_schedules.id AS ID_SSCHEDULE', 'sub_vocationals.id AS ID_SUBVOC',
-                                            'registrations.*', 'selections.*', 'selection_schedules.*', 'sub_vocationals.*')
-                                            ->join('selections', 'selections.registration_id', '=', 'registrations.id')
-                                            ->join('selection_schedules', 'selection_schedules.id', '=', 'selections.selection_schedule_id')
-                                            ->join('sub_vocationals', 'sub_vocationals.id', '=', 'selection_schedules.sub_vocational_id')
-                                            ->where('registrant_id', '=', $data->ID_REGISTRANT)
-                                            ->orderBy('ID_SELECTION','DESC')
-                                            ->get();
-            // return $registration;
-
-            $criterias = Criteria::where('step', '=', '2')
-                                    ->where('status', '=', '1')
-                                    ->where('description', '<>', null)
-                                    ->whereNotIn('id', function($query){
-                                        $query->select('criteria_id')
-                                        ->from(with(new Choice)->getTable())
-                                        ->where('suggestion', 1);
-                                    })
-                                    ->orderBy('id','DESC')->get();
-            
-            $return_data = array();
-            // return $data->ID_SELECTION;
-
-            foreach ($criterias as $criteria) {
-                $single_data = array();
-                $single_data["criteria"] = $criteria;
-                $result_selection = ResultSelection::where('selection_id', '=', $data->ID_SELECTION)
-                                                    ->where('criteria_id', '=', $criteria->id)
-                                                    ->first();
-                if ($result_selection == null) {
-                    $single_data["value"] = null;
-                } else {
-                    $single_data["value"] = $result_selection;
-                }
-                $return_data[] = $single_data;
+            if ($result_selection == null) {
+                $single_data["value"] = null;
+            } else {
+                $single_data["value"] = $result_selection;
             }
-            //  return $return_data;
-
-            return view('result_selection.assessment',compact('data', 'age', 'check_result','educational_background','course_experience','upload','registration','return_data','i','j'));
-        } else {
-            return redirect()->route('profile_users.show');
+            $return_data[] = $single_data;
         }
+        //  return $return_data;
+
+        return view('result_selection.assessment',compact('data', 'age', 'check_result','educational_background','course_experience','upload','registration','return_data','i','j'));
     }
 
     /**

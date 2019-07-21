@@ -17,24 +17,18 @@ class CriteriaController extends Controller
      */
     public function index(Request $request)
     {
-        $role_id = Auth::user()->roleId();
-
-        if ($role_id == 1) {
-            $criterias = Criteria::select('*')
-                                    ->where('description','<>','null')
-                                    ->where('step','=','1')
-                                    ->where('status','=','1')
-                                    ->whereNotIn('id', function($query){
-                                        $query->select('criteria_id')
-                                        ->from(with(new Choice)->getTable())
-                                        ->where('suggestion', 1);
-                                    })->orderBy('id','DESC')->paginate(10);
-        
-            return view('criterias.index',compact('criterias'))
-                ->with('i', ($request->input('page', 1) - 1) * 10);
-        } else {
-            return redirect()->route('profile_users.show');
-        } 
+        $criterias = Criteria::select('*')
+                                ->where('description','<>','null')
+                                ->where('step','=','1')
+                                ->where('status','=','1')
+                                ->whereNotIn('id', function($query){
+                                    $query->select('criteria_id')
+                                    ->from(with(new Choice)->getTable())
+                                    ->where('suggestion', 1);
+                                })->orderBy('id','DESC')->paginate(10);
+    
+        return view('criterias.index',compact('criterias'))
+            ->with('i', ($request->input('page', 1) - 1) * 10);
     }
 
     /**
@@ -44,13 +38,7 @@ class CriteriaController extends Controller
      */
     public function create()
     {
-        $role_id = Auth::user()->roleId();
-
-        if ($role_id == 1) {
-            return view('criterias.create');
-        } else {
-            return redirect()->route('profile_users.show');
-        } 
+        return view('criterias.create');
     }
 
     /**
@@ -84,15 +72,9 @@ class CriteriaController extends Controller
      */
     public function show($id)
     {
-        $role_id = Auth::user()->roleId();
-
-        if ($role_id == 1) {
-            $criteria = Criteria::find($id);
-            
-            return view('criterias.show',compact('criteria'));
-        } else {
-            return redirect()->route('profile_users.show');
-        } 
+        $criteria = Criteria::find($id);
+        
+        return view('criterias.show',compact('criteria'));
     }
 
     /**
@@ -103,15 +85,9 @@ class CriteriaController extends Controller
      */
     public function edit($id)
     {
-        $role_id = Auth::user()->roleId();
+        $criteria = Criteria::find($id);
 
-        if ($role_id == 1) {
-            $criteria = Criteria::find($id);
-
-            return view('criterias.edit',compact('criteria'));
-        } else {
-            return redirect()->route('profile_users.show');
-        } 
+        return view('criterias.edit',compact('criteria'));
     }
 
     /**

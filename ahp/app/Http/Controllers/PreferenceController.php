@@ -17,25 +17,19 @@ class PreferenceController extends Controller
      */
     public function index(Request $request)
     {
-        $role_id = Auth::user()->roleId();
-        
-        if ($role_id == 3) {
-            $preferences = Criteria::where('step', '=', '2')
-                                    ->where('status', '=', '1')
-                                    ->where('description', '<>', null)
-                                    ->whereNotIn('id', function($query){
-                                        $query->select('criteria_id')
-                                        ->from(with(new Choice)->getTable())
-                                        ->where('suggestion', 1);
-                                    })
-                                    ->orderBy('id','DESC')
-                                    ->paginate(10);
-                                    
-            return view('preferences.index',compact('preferences'))
-                ->with('i', ($request->input('page', 1) - 1) * 10);
-        } else {
-            return redirect()->route('profile_users.show');
-        }
+        $preferences = Criteria::where('step', '=', '2')
+                                ->where('status', '=', '1')
+                                ->where('description', '<>', null)
+                                ->whereNotIn('id', function($query){
+                                    $query->select('criteria_id')
+                                    ->from(with(new Choice)->getTable())
+                                    ->where('suggestion', 1);
+                                })
+                                ->orderBy('id','DESC')
+                                ->paginate(10);
+                                
+        return view('preferences.index',compact('preferences'))
+            ->with('i', ($request->input('page', 1) - 1) * 10);
     }
 
     /**
@@ -46,15 +40,9 @@ class PreferenceController extends Controller
      */
     public function edit($id)
     {
-        $role_id = Auth::user()->roleId();
-        
-        if ($role_id == 3) {
-            $preference = Criteria::find($id);
+        $preference = Criteria::find($id);
 
-            return view('preferences.edit',compact('preference'));
-        } else {
-            return redirect()->route('profile_users.show');
-        }
+        return view('preferences.edit',compact('preference'));
     }
 
     /**

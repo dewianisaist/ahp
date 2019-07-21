@@ -20,16 +20,10 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $role_id = Auth::user()->roleId();
-        
-        if ($role_id == 1) {
-            $data = User::orderBy('id','DESC')->paginate(10);
+        $data = User::orderBy('id','DESC')->paginate(10);
 
-            return view('users.index',compact('data'))
-                ->with('i', ($request->input('page', 1) - 1) * 10);
-        } else {
-            return redirect()->route('profile_users.show');
-        }
+        return view('users.index',compact('data'))
+            ->with('i', ($request->input('page', 1) - 1) * 10);
     }
 
     /**
@@ -39,15 +33,9 @@ class UserController extends Controller
      */
     public function create()
     {
-        $role_id = Auth::user()->roleId();
-        
-        if ($role_id == 1) {
-            $roles = Role::lists('display_name','id');
+        $roles = Role::lists('display_name','id');
 
-            return view('users.create',compact('roles'));
-        } else {
-            return redirect()->route('profile_users.show');
-        }
+        return view('users.create',compact('roles'));
     }
 
     /**
@@ -85,16 +73,10 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
-        $role_id = Auth::user()->roleId();
+    {        
+        $user = User::find($id);
         
-        if ($role_id == 1) {
-            $user = User::find($id);
-            
-            return view('users.show',compact('user'));
-        } else {
-            return redirect()->route('profile_users.show');
-        }
+        return view('users.show',compact('user'));
     }
 
     /**
@@ -104,18 +86,12 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
-    {
-        $role_id = Auth::user()->roleId();
-        
-        if ($role_id == 1) {
-            $user = User::find($id);
-            $roles = Role::lists('display_name','id');
-            $userRole = $user->roles->lists('id','id')->toArray();
+    {        
+        $user = User::find($id);
+        $roles = Role::lists('display_name','id');
+        $userRole = $user->roles->lists('id','id')->toArray();
 
-            return view('users.edit',compact('user','roles','userRole'));
-        } else {
-            return redirect()->route('profile_users.show');
-        }
+        return view('users.edit',compact('user','roles','userRole'));
     }
 
     /**

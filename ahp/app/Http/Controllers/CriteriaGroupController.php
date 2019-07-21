@@ -20,94 +20,89 @@ class CriteriaGroupController extends Controller
      */
     public function index(Request $request)
     {
-        $role_id = Auth::user()->roleId();
         $user = User::find(Auth::user()->id);
         $data = Choice::where('user_id', '=', $user->id)->first();
 
-        if ($role_id == 3 || $role_id == 4 || $role_id == 5 ||$role_id == 6) { 
-            if ($user->id == 1) {
-                $i = 0;
-                $j = 0;
+        if ($user->id == 1) {
+            $i = 0;
+            $j = 0;
 
-                $criterias_fix = Choice::select('choice.*', 'criterias.*')
-                                        ->join('criterias','criterias.id','=','choice.criteria_id')
-                                        ->where('choice.suggestion', '=', '0')
-                                        ->where('criterias.step', '=', '2')
-                                        ->where('criterias.status', '=', '1')
-                                        ->where('criterias.group_criteria', '=', null)
-                                        ->orderBy('criterias.id','DESC')
-                                        ->get();
-                
-                $list_group = Criteria::where('group_criteria','=',null)
-                                            ->where('description','=',null)
-                                            ->lists('name','id')
-                                            ->all();
+            $criterias_fix = Choice::select('choice.*', 'criterias.*')
+                                    ->join('criterias','criterias.id','=','choice.criteria_id')
+                                    ->where('choice.suggestion', '=', '0')
+                                    ->where('criterias.step', '=', '2')
+                                    ->where('criterias.status', '=', '1')
+                                    ->where('criterias.group_criteria', '=', null)
+                                    ->orderBy('criterias.id','DESC')
+                                    ->get();
+            
+            $list_group = Criteria::where('group_criteria','=',null)
+                                        ->where('description','=',null)
+                                        ->lists('name','id')
+                                        ->all();
 
-                $criterias_group = array();
-                foreach ($list_group as $key=>$name){
-                    $criterias_group[$key]["name"] = $name;
-                    $criterias_group[$key]["data"] = array();
-                    $criterias = Choice::select('choice.*', 'criterias.*')
-                                        ->join('criterias','criterias.id','=','choice.criteria_id')
-                                        ->where('choice.suggestion', '=', '0')
-                                        ->where('criterias.step', '=', '2')
-                                        ->where('criterias.status', '=', '1')
-                                        ->where('criterias.group_criteria', '=', $key)
-                                        ->orderBy('criterias.id','DESC')
-                                        ->get();
+            $criterias_group = array();
+            foreach ($list_group as $key=>$name){
+                $criterias_group[$key]["name"] = $name;
+                $criterias_group[$key]["data"] = array();
+                $criterias = Choice::select('choice.*', 'criterias.*')
+                                    ->join('criterias','criterias.id','=','choice.criteria_id')
+                                    ->where('choice.suggestion', '=', '0')
+                                    ->where('criterias.step', '=', '2')
+                                    ->where('criterias.status', '=', '1')
+                                    ->where('criterias.group_criteria', '=', $key)
+                                    ->orderBy('criterias.id','DESC')
+                                    ->get();
 
-                    foreach ($criterias as $criteria){
-                        $criterias_group[$key]["data"][] = $criteria;
-                    }
+                foreach ($criterias as $criteria){
+                    $criterias_group[$key]["data"][] = $criteria;
                 }
-
-                return view('criteria_group.index',compact('criterias', 'criterias_fix', 'list_group', 'criterias_group', 'i', 'j'));
             }
 
-            if ($data == null) {
-                return redirect()->route('questionnaire.create')
-                                ->with('failed','Maaf, silahkan isi kuesioner kriteria dahulu.');
-            } else {
-                $i = 0;
-                $j = 0;
+            return view('criteria_group.index',compact('criterias', 'criterias_fix', 'list_group', 'criterias_group', 'i', 'j'));
+        }
 
-                $criterias_fix = Choice::select('choice.*', 'criterias.*')
-                                        ->join('criterias','criterias.id','=','choice.criteria_id')
-                                        ->where('choice.suggestion', '=', '0')
-                                        ->where('criterias.step', '=', '2')
-                                        ->where('criterias.status', '=', '1')
-                                        ->where('criterias.group_criteria', '=', null)
-                                        ->orderBy('criterias.id','DESC')
-                                        ->get();
-                
-                $list_group = Criteria::where('group_criteria','=',null)
-                                            ->where('description','=',null)
-                                            ->lists('name','id')
-                                            ->all();
-
-                $criterias_group = array();
-                foreach ($list_group as $key=>$name){
-                    $criterias_group[$key]["name"] = $name;
-                    $criterias_group[$key]["data"] = array();
-                    $criterias = Choice::select('choice.*', 'criterias.*')
-                                        ->join('criterias','criterias.id','=','choice.criteria_id')
-                                        ->where('choice.suggestion', '=', '0')
-                                        ->where('criterias.step', '=', '2')
-                                        ->where('criterias.status', '=', '1')
-                                        ->where('criterias.group_criteria', '=', $key)
-                                        ->orderBy('criterias.id','DESC')
-                                        ->get();
-
-                    foreach ($criterias as $criteria){
-                        $criterias_group[$key]["data"][] = $criteria;
-                    }
-                }
-
-                // return $criterias_group;
-                return view('criteria_group.index',compact('criterias', 'criterias_fix', 'list_group', 'criterias_group', 'i', 'j'));
-            }
+        if ($data == null) {
+            return redirect()->route('questionnaire.create')
+                            ->with('failed','Maaf, silahkan isi kuesioner kriteria dahulu.');
         } else {
-            return redirect()->route('profile_users.show');
+            $i = 0;
+            $j = 0;
+
+            $criterias_fix = Choice::select('choice.*', 'criterias.*')
+                                    ->join('criterias','criterias.id','=','choice.criteria_id')
+                                    ->where('choice.suggestion', '=', '0')
+                                    ->where('criterias.step', '=', '2')
+                                    ->where('criterias.status', '=', '1')
+                                    ->where('criterias.group_criteria', '=', null)
+                                    ->orderBy('criterias.id','DESC')
+                                    ->get();
+            
+            $list_group = Criteria::where('group_criteria','=',null)
+                                        ->where('description','=',null)
+                                        ->lists('name','id')
+                                        ->all();
+
+            $criterias_group = array();
+            foreach ($list_group as $key=>$name){
+                $criterias_group[$key]["name"] = $name;
+                $criterias_group[$key]["data"] = array();
+                $criterias = Choice::select('choice.*', 'criterias.*')
+                                    ->join('criterias','criterias.id','=','choice.criteria_id')
+                                    ->where('choice.suggestion', '=', '0')
+                                    ->where('criterias.step', '=', '2')
+                                    ->where('criterias.status', '=', '1')
+                                    ->where('criterias.group_criteria', '=', $key)
+                                    ->orderBy('criterias.id','DESC')
+                                    ->get();
+
+                foreach ($criterias as $criteria){
+                    $criterias_group[$key]["data"][] = $criteria;
+                }
+            }
+
+            // return $criterias_group;
+            return view('criteria_group.index',compact('criterias', 'criterias_fix', 'list_group', 'criterias_group', 'i', 'j'));
         }
     }
 

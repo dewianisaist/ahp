@@ -16,23 +16,17 @@ class SelectionController extends Controller
      */
     public function index(Request $request)
     {
-        $role_id = Auth::user()->roleId();
+        $data = Selection::select('selections.*', 'users.name AS name_registrant', 'selection_schedules.date', 
+                                'selection_schedules.time', 'sub_vocationals.name AS name_sub_vocational')
+                        ->join('registrations', 'registrations.id', '=', 'selections.registration_id')
+                        ->join('registrants', 'registrants.id', '=', 'registrations.registrant_id')
+                        ->join('users', 'users.id', '=', 'registrants.user_id')
+                        ->join('selection_schedules', 'selection_schedules.id', '=', 'selections.selection_schedule_id')
+                        ->join('sub_vocationals', 'sub_vocationals.id', '=', 'selection_schedules.sub_vocational_id')
+                        ->orderBy('selections.id','DESC')->paginate(10);
 
-        if ($role_id == 3 || $role_id == 5 || $role_id == 6) {
-            $data = Selection::select('selections.*', 'users.name AS name_registrant', 'selection_schedules.date', 
-                                  'selection_schedules.time', 'sub_vocationals.name AS name_sub_vocational')
-                            ->join('registrations', 'registrations.id', '=', 'selections.registration_id')
-                            ->join('registrants', 'registrants.id', '=', 'registrations.registrant_id')
-                            ->join('users', 'users.id', '=', 'registrants.user_id')
-                            ->join('selection_schedules', 'selection_schedules.id', '=', 'selections.selection_schedule_id')
-                            ->join('sub_vocationals', 'sub_vocationals.id', '=', 'selection_schedules.sub_vocational_id')
-                            ->orderBy('selections.id','DESC')->paginate(10);
-
-            return view('selections.index',compact('data'))
-                        ->with('i', ($request->input('page', 1) - 1) * 10);
-        } else {
-            return redirect()->route('profile_users.show');
-        }
+        return view('selections.index',compact('data'))
+                    ->with('i', ($request->input('page', 1) - 1) * 10);
     }
  
     /**
@@ -43,23 +37,17 @@ class SelectionController extends Controller
      */
     public function show($id)
     {
-        $role_id = Auth::user()->roleId();
+        $selection = Selection::select('selections.*', 'users.name AS name_registrant', 'selection_schedules.date', 
+                                        'selection_schedules.time', 'sub_vocationals.name AS name_sub_vocational')
+                                ->join('registrations', 'registrations.id', '=', 'selections.registration_id')
+                                ->join('registrants', 'registrants.id', '=', 'registrations.registrant_id')
+                                ->join('users', 'users.id', '=', 'registrants.user_id')
+                                ->join('selection_schedules', 'selection_schedules.id', '=', 'selections.selection_schedule_id')
+                                ->join('sub_vocationals', 'sub_vocationals.id', '=', 'selection_schedules.sub_vocational_id')
+                                ->where('selections.id', '=', $id)
+                                ->first();
 
-        if ($role_id == 3 || $role_id == 5 || $role_id == 6) {
-            $selection = Selection::select('selections.*', 'users.name AS name_registrant', 'selection_schedules.date', 
-                                            'selection_schedules.time', 'sub_vocationals.name AS name_sub_vocational')
-                                    ->join('registrations', 'registrations.id', '=', 'selections.registration_id')
-                                    ->join('registrants', 'registrants.id', '=', 'registrations.registrant_id')
-                                    ->join('users', 'users.id', '=', 'registrants.user_id')
-                                    ->join('selection_schedules', 'selection_schedules.id', '=', 'selections.selection_schedule_id')
-                                    ->join('sub_vocationals', 'sub_vocationals.id', '=', 'selection_schedules.sub_vocational_id')
-                                    ->where('selections.id', '=', $id)
-                                    ->first();
-
-            return view('selections.show',compact('selection'));
-        } else {
-            return redirect()->route('profile_users.show');
-        }
+        return view('selections.show',compact('selection'));
     }
 
     /**
@@ -70,23 +58,17 @@ class SelectionController extends Controller
      */
     public function edit($id)
     {
-        $role_id = Auth::user()->roleId();
+        $selection = Selection::select('selections.*', 'users.name AS name_registrant', 'selection_schedules.date', 
+                                        'selection_schedules.time', 'sub_vocationals.name AS name_sub_vocational')
+                                ->join('registrations', 'registrations.id', '=', 'selections.registration_id')
+                                ->join('registrants', 'registrants.id', '=', 'registrations.registrant_id')
+                                ->join('users', 'users.id', '=', 'registrants.user_id')
+                                ->join('selection_schedules', 'selection_schedules.id', '=', 'selections.selection_schedule_id')
+                                ->join('sub_vocationals', 'sub_vocationals.id', '=', 'selection_schedules.sub_vocational_id')
+                                ->where('selections.id', '=', $id)
+                                ->first();
 
-        if ($role_id == 3 || $role_id == 5 || $role_id == 6) {
-            $selection = Selection::select('selections.*', 'users.name AS name_registrant', 'selection_schedules.date', 
-                                            'selection_schedules.time', 'sub_vocationals.name AS name_sub_vocational')
-                                    ->join('registrations', 'registrations.id', '=', 'selections.registration_id')
-                                    ->join('registrants', 'registrants.id', '=', 'registrations.registrant_id')
-                                    ->join('users', 'users.id', '=', 'registrants.user_id')
-                                    ->join('selection_schedules', 'selection_schedules.id', '=', 'selections.selection_schedule_id')
-                                    ->join('sub_vocationals', 'sub_vocationals.id', '=', 'selection_schedules.sub_vocational_id')
-                                    ->where('selections.id', '=', $id)
-                                    ->first();
-
-            return view('selections.edit',compact('selection'));
-        } else {
-            return redirect()->route('profile_users.show');
-        }
+        return view('selections.edit',compact('selection'));
     }
 
     /**

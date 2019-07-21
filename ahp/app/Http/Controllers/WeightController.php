@@ -18,55 +18,49 @@ class WeightController extends Controller
      */
     public function index()
     {
-        $role_id = Auth::user()->roleId();
+        $i = 0;
+        $criterias = Criteria::where('step', '=', '2')
+                                ->where('status', '=', '1')
+                                ->where('group_criteria', '=', null)
+                                ->whereNotIn('id', function($query){
+                                    $query->select('criteria_id')
+                                    ->from(with(new Choice)->getTable())
+                                    ->where('suggestion', 1);
+                                })
+                                ->get();
 
-        if ($role_id == 3) {
-            $i = 0;
-            $criterias = Criteria::where('step', '=', '2')
-                                    ->where('status', '=', '1')
-                                    ->where('group_criteria', '=', null)
-                                    ->whereNotIn('id', function($query){
-                                        $query->select('criteria_id')
-                                        ->from(with(new Choice)->getTable())
-                                        ->where('suggestion', 1);
-                                    })
-                                    ->get();
+        $criterias_group = array();
+        $total_criterias = 0;
 
-            $criterias_group = array();
-            $total_criterias = 0;
+        foreach ($criterias as $criteria) {
+            $criterias_group[$criteria->id]["group"] = $criteria;
+            $criterias_group[$criteria->id]["data"] = array();
 
-            foreach ($criterias as $criteria) {
-                $criterias_group[$criteria->id]["group"] = $criteria;
-                $criterias_group[$criteria->id]["data"] = array();
-
-                $subcriterias = Criteria::where('step', '=', '2')
-                                            ->where('status', '=', '1')
-                                            ->where('group_criteria', '=', $criteria->id)
-                                            ->whereNotIn('id', function($query){
-                                                $query->select('criteria_id')
-                                                ->from(with(new Choice)->getTable())
-                                                ->where('suggestion', 1);
-                                            })
-                                            ->orderBy('id','DESC')
-                                            ->get();
-                
-                if (count($subcriterias) == 0) {
-                    $criteria->global_weight = $criteria->partial_weight;
-                    $criteria->save();
-                }
-
-                foreach ($subcriterias as $subcriteria) {
-                    $subcriteria->global_weight = number_format($criteria->partial_weight * $subcriteria->partial_weight, 3);
-                    $subcriteria->save();
-                    $criterias_group[$criteria->id]["data"][] = $subcriteria;
-                }
-
+            $subcriterias = Criteria::where('step', '=', '2')
+                                        ->where('status', '=', '1')
+                                        ->where('group_criteria', '=', $criteria->id)
+                                        ->whereNotIn('id', function($query){
+                                            $query->select('criteria_id')
+                                            ->from(with(new Choice)->getTable())
+                                            ->where('suggestion', 1);
+                                        })
+                                        ->orderBy('id','DESC')
+                                        ->get();
+            
+            if (count($subcriterias) == 0) {
+                $criteria->global_weight = $criteria->partial_weight;
+                $criteria->save();
             }
 
-            return view('weights.index', compact('criterias_group', 'i'));
-        } else {
-            return redirect()->route('profile_users.show');
+            foreach ($subcriterias as $subcriteria) {
+                $subcriteria->global_weight = number_format($criteria->partial_weight * $subcriteria->partial_weight, 3);
+                $subcriteria->save();
+                $criterias_group[$criteria->id]["data"][] = $subcriteria;
+            }
+
         }
+
+        return view('weights.index', compact('criterias_group', 'i'));
     }
 
     /**
@@ -77,71 +71,65 @@ class WeightController extends Controller
      */
     public function create($id)
     {
-        $role_id = Auth::user()->roleId();
+        $i = 0;
+        $requestedId = null;
 
-        if ($role_id == 3) {
-            $i = 0;
-            $requestedId = null;
+        if ($id > 0) {
+            $requestedId = $id;
+        }
 
-            if ($id > 0) {
-                $requestedId = $id;
-            }
-
-            $criterias = Criteria::where('step', '=', '2')
-                                    ->where('status', '=', '1')
-                                    ->where('group_criteria', '=', $requestedId)
-                                    ->whereNotIn('id', function($query){
-                                        $query->select('criteria_id')
-                                        ->from(with(new Choice)->getTable())
-                                        ->where('suggestion', 1);
-                                    })
-                                    ->orderBy('id','DESC')
-                                    ->get();
-
-            $compares = array();
-            foreach ($criterias as $criteria1) {
-                foreach ($criterias as $criteria2) {
-                    if (!array_key_exists($criteria1->id.":".$criteria2->id,$compares) && !array_key_exists($criteria2->id.":".$criteria1->id,$compares) && $criteria1->id != $criteria2->id){
-                        $data = array();
-                        $data[] = $criteria1;
-                        $data[] = $criteria2;
-                        $compares[$criteria1->id.":".$criteria2->id] = array();
-                        $compares[$criteria1->id.":".$criteria2->id]['criteria'] = $data;
-                        $pairwises = PairwiseComparison::where(function($q) use ($criteria1, $criteria2) {
-                            $q->where(function($query) use ($criteria1, $criteria2) {
-                                    $query->where('criteria1_id','=', $criteria1->id)
-                                        ->where('criteria2_id', $criteria2->id);
+        $criterias = Criteria::where('step', '=', '2')
+                                ->where('status', '=', '1')
+                                ->where('group_criteria', '=', $requestedId)
+                                ->whereNotIn('id', function($query){
+                                    $query->select('criteria_id')
+                                    ->from(with(new Choice)->getTable())
+                                    ->where('suggestion', 1);
                                 })
-                            ->orWhere(function($query) use ($criteria1, $criteria2) {
-                                    $query->where('criteria1_id', $criteria2->id)
-                                        ->where('criteria2_id', $criteria1->id);
-                                });
+                                ->orderBy('id','DESC')
+                                ->get();
+
+        $compares = array();
+        foreach ($criterias as $criteria1) {
+            foreach ($criterias as $criteria2) {
+                if (!array_key_exists($criteria1->id.":".$criteria2->id,$compares) && !array_key_exists($criteria2->id.":".$criteria1->id,$compares) && $criteria1->id != $criteria2->id){
+                    $data = array();
+                    $data[] = $criteria1;
+                    $data[] = $criteria2;
+                    $compares[$criteria1->id.":".$criteria2->id] = array();
+                    $compares[$criteria1->id.":".$criteria2->id]['criteria'] = $data;
+                    $pairwises = PairwiseComparison::where(function($q) use ($criteria1, $criteria2) {
+                        $q->where(function($query) use ($criteria1, $criteria2) {
+                                $query->where('criteria1_id','=', $criteria1->id)
+                                    ->where('criteria2_id', $criteria2->id);
                             })
-                            ->get();
+                        ->orWhere(function($query) use ($criteria1, $criteria2) {
+                                $query->where('criteria1_id', $criteria2->id)
+                                    ->where('criteria2_id', $criteria1->id);
+                            });
+                        })
+                        ->get();
 
-                        $value = 0;
-                        $selected_criteria = $criteria1->id;
+                    $value = 0;
+                    $selected_criteria = $criteria1->id;
 
-                        foreach ($pairwises as $pairwise) {
-                            if ($pairwise->value > $value) {
-                                $value = $pairwise->value;
-                                $selected_criteria = $pairwise->criteria1_id;
-                            }
+                    foreach ($pairwises as $pairwise) {
+                        if ($pairwise->value > $value) {
+                            $value = $pairwise->value;
+                            $selected_criteria = $pairwise->criteria1_id;
                         }
-                        
-
-                        $compares[$criteria1->id.":".$criteria2->id]['value'] = $value;
-                        $compares[$criteria1->id.":".$criteria2->id]['selected_criteria'] = $selected_criteria;
-                        $compares[$criteria1->id.":".$criteria2->id]['pairwise'] = $pairwises;
                     }
+                    
+
+                    $compares[$criteria1->id.":".$criteria2->id]['value'] = $value;
+                    $compares[$criteria1->id.":".$criteria2->id]['selected_criteria'] = $selected_criteria;
+                    $compares[$criteria1->id.":".$criteria2->id]['pairwise'] = $pairwises;
                 }
             }
-
-            // return $compares;
-            return view('weights.pairwise',compact('compares', 'id','i'));
-        } else {
-            return redirect()->route('profile_users.show');
         }
+
+        // return $compares;
+        return view('weights.pairwise',compact('compares', 'id','i'));
     }
 
     /**
