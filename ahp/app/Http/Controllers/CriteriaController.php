@@ -78,23 +78,9 @@ class CriteriaController extends Controller
      */
     public function edit($id)
     {
-        // $user = User::find(Auth::user()->id);
-        // $data = Choice::where('user_id', '=', $user->id)->first();
+        $criteria = Criteria::find($id);
 
-        // if ($user->id == 1) {
-        //     $criteria_group = Criteria::find($id);
-
-        //     return view('criteria_group.edit',compact('criteria_group'));
-        // }
-
-        // if ($data == null) {
-        //     return redirect()->route('questionnaire.create')
-        //                     ->with('failed','Maaf, silahkan isi kuesioner kriteria dahulu.');
-        // } else {
-        //     $criteria_group = Criteria::find($id);
-
-        //     return view('criteria_group.edit',compact('criteria_group'));
-        // }
+        return view('criteria.edit',compact('criteria'));
     }
 
     /**
@@ -106,10 +92,10 @@ class CriteriaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // Criteria::find($id)->update($request->all());
+        Criteria::find($id)->update($request->all());
  
-        // return redirect()->route('criteriagroup.index')
-        //                  ->with('success','Kelompok kriteria berhasil diedit');
+        return redirect()->route('criteria.index')
+                         ->with('success','Kriteria/Subkriteria berhasil diedit');
     }
 
     /**
@@ -131,48 +117,6 @@ class CriteriaController extends Controller
             return redirect()->route('criteria.index')
                             ->with('failed','Kriteria tidak bisa dihapus karena mempunyai subkriteria');
         }
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function subedit($id)
-    {
-        // $user = User::find(Auth::user()->id);
-        // $data = Choice::where('user_id', '=', $user->id)->first();
-
-        // if ($user->id == 1) {
-        //     $criteria_group = Criteria::find($id);
-
-        //     return view('criteria_group.edit',compact('criteria_group'));
-        // }
-
-        // if ($data == null) {
-        //     return redirect()->route('questionnaire.create')
-        //                     ->with('failed','Maaf, silahkan isi kuesioner kriteria dahulu.');
-        // } else {
-        //     $criteria_group = Criteria::find($id);
-
-        //     return view('criteria_group.edit',compact('criteria_group'));
-        // }
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function subupdate(Request $request, $id)
-    {
-        // Criteria::find($id)->update($request->all());
- 
-        // return redirect()->route('criteriagroup.index')
-        //                  ->with('success','Kelompok kriteria berhasil diedit');
     }
 
     /**

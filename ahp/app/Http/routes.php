@@ -88,15 +88,13 @@ Route::group(['middleware' => ['auth']], function() {
 	Route::get('authrole',['as'=>'authrole.index','uses'=>'AuthRoleController@index']);
 	Route::post('authrole',['as'=>'authrole.store','uses'=>'AuthRoleController@store']);
 
-	//criteriagroup - ada permission
+	//criteria - fix
 	Route::get('criteria',['as'=>'criteria.index','uses'=>'CriteriaController@index']);
 	Route::get('criteria/create',['as'=>'criteria.create','uses'=>'CriteriaController@create']);
 	Route::post('criteria/create',['as'=>'criteria.store','uses'=>'CriteriaController@store']);
 	Route::get('criteria/{id}/edit',['as'=>'criteria.edit','uses'=>'CriteriaController@edit']);
-	Route::patch('criteria/{id}/edit',['as'=>'criteria.update','uses'=>'CriteriaController@update']);
+	Route::patch('criteria/{id}',['as'=>'criteria.update','uses'=>'CriteriaController@update']);
 	Route::delete('criteria/{id}',['as'=>'criteria.destroy','uses'=>'CriteriaController@destroy']);
-	Route::get('criteria/{id}/sub',['as'=>'criteria.subedit','uses'=>'CriteriaController@subedit']);
-	Route::patch('criteria/{id}/sub',['as'=>'criteria.subupdate','uses'=>'CriteriaController@subupdate']);
 	Route::delete('criteria/{id}/sub',['as'=>'criteria.subdestroy','uses'=>'CriteriaController@subdestroy']);
 
 	//weight - tidak ada permission
