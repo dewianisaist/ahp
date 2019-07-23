@@ -95,13 +95,9 @@ Route::group(['middleware' => ['auth']], function() {
 	Route::get('criteria/{id}/edit',['as'=>'criteria.edit','uses'=>'CriteriaController@edit']);
 	Route::patch('criteria/{id}/edit',['as'=>'criteria.update','uses'=>'CriteriaController@update']);
 	Route::delete('criteria/{id}',['as'=>'criteria.destroy','uses'=>'CriteriaController@destroy']);
-
 	Route::get('criteria/{id}/sub',['as'=>'criteria.subedit','uses'=>'CriteriaController@subedit']);
 	Route::patch('criteria/{id}/sub',['as'=>'criteria.subupdate','uses'=>'CriteriaController@subupdate']);
 	Route::delete('criteria/{id}/sub',['as'=>'criteria.subdestroy','uses'=>'CriteriaController@subdestroy']);
-
-	// Route::post('criteria/add',['as'=>'criteria.add','uses'=>'CriteriaController@add']);
-	// Route::post('criteria/out',['as'=>'criteria.out','uses'=>'CriteriaController@out']);
 
 	//weight - tidak ada permission
 	Route::get('weights',['as'=>'weights.index','uses'=>'WeightController@index']);

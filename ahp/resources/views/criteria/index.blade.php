@@ -71,8 +71,8 @@
 							<td width = "50px" align ="right" bgcolor="#FDFDFD"></td>
 							<td bgcolor="#FDFDFD"><li>{{ $sub->name }}</li></td>
 							<td bgcolor="#FDFDFD">
-								<a class="btn btn-info" href="{{ route('criteria.subedit',$id) }}">Edit</a>
-								{!! Form::open(['method' => 'DELETE','route' => ['criteria.subdestroy', $id],'style'=>'display:inline']) !!}
+								<a class="btn btn-info" href="{{ route('criteria.subedit',$sub->id) }}">Edit</a>
+								{!! Form::open(['method' => 'DELETE','route' => ['criteria.subdestroy', $sub->id],'style'=>'display:inline']) !!}
 								{!! Form::submit('Delete', ['class' => 'btn btn-warning']) !!}
 								{!! Form::close() !!}
 							</td>

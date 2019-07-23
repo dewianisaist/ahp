@@ -39,7 +39,6 @@ class CriteriaController extends Controller
             }
         }
 
-        // return $criterias_group;
         return view('criteria.index',compact('subcriterias', 'list_criteria', 'criterias', 'i', 'j'));
     }
 
@@ -121,18 +120,17 @@ class CriteriaController extends Controller
      */
     public function destroy($id)
     {
-        // $pairwise = PairwiseComparison::where('criteria1_id', '=', $id)->first();
+        $check = Criteria::where('group_criteria', '=', $id)->first();
 
-        // if ($pairwise == null) {
-        //     Criteria::where('group_criteria', '=', $id)->update(['group_criteria' => null]);
-        //     Criteria::find($id)->delete();
+        if ($check == null) {
+            Criteria::find($id)->delete();
 
-        //     return redirect()->route('criteriagroup.index')
-        //                     ->with('success','Kelompok kriteria berhasil dihapus');
-        // } else {
-        //     return redirect()->route('criteriagroup.index')
-        //                     ->with('failed','Kelompok kriteria tidak bisa dihapus karena sudah ada penilaian');
-        // }
+            return redirect()->route('criteria.index')
+                            ->with('success','Kriteria berhasil dihapus');
+        } else {
+            return redirect()->route('criteria.index')
+                            ->with('failed','Kriteria tidak bisa dihapus karena mempunyai subkriteria');
+        }
     }
 
     /**
@@ -185,47 +183,9 @@ class CriteriaController extends Controller
      */
     public function subdestroy($id)
     {
-        // $pairwise = PairwiseComparison::where('criteria1_id', '=', $id)->first();
+        Criteria::find($id)->delete();
 
-        // if ($pairwise == null) {
-        //     Criteria::where('group_criteria', '=', $id)->update(['group_criteria' => null]);
-        //     Criteria::find($id)->delete();
-
-        //     return redirect()->route('criteriagroup.index')
-        //                     ->with('success','Kelompok kriteria berhasil dihapus');
-        // } else {
-        //     return redirect()->route('criteriagroup.index')
-        //                     ->with('failed','Kelompok kriteria tidak bisa dihapus karena sudah ada penilaian');
-        // }
+        return redirect()->route('criteria.index')
+                        ->with('success','Subkriteria berhasil dihapus');
     }
-
-    /**
-     * Add the specified criteria to group.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function add(Request $request)
-    {
-        
-        // Criteria::find($request['id'])->update($request->all());
-
-        // return redirect()->route('criteriagroup.index')
-        //                 ->with('success','Kriteria berhasil dikelompokkan');
-    }
-
-    /**
-     * Out the specified criteria from group.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function out(Request $request)
-    {
-        // Criteria::find($request['id'])->update(['group_criteria' => null]);
-
-        // return redirect()->route('criteriagroup.index')
-        //                 ->with('success','Kriteria berhasil dikeluarkan dari kelompok');
-    }
-
 }
