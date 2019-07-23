@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Models\Criteria;
-use App\Http\Models\Choice;
 use App\Http\Models\PairwiseComparison;
 use Auth;
 
@@ -19,15 +18,7 @@ class WeightController extends Controller
     public function index()
     {
         $i = 0;
-        $criterias = Criteria::where('step', '=', '2')
-                                ->where('status', '=', '1')
-                                ->where('group_criteria', '=', null)
-                                ->whereNotIn('id', function($query){
-                                    $query->select('criteria_id')
-                                    ->from(with(new Choice)->getTable())
-                                    ->where('suggestion', 1);
-                                })
-                                ->get();
+        $criterias = Criteria::where('group_criteria', '=', null)->get();
 
         $criterias_group = array();
         $total_criterias = 0;
@@ -36,16 +27,9 @@ class WeightController extends Controller
             $criterias_group[$criteria->id]["group"] = $criteria;
             $criterias_group[$criteria->id]["data"] = array();
 
-            $subcriterias = Criteria::where('step', '=', '2')
-                                        ->where('status', '=', '1')
-                                        ->where('group_criteria', '=', $criteria->id)
-                                        ->whereNotIn('id', function($query){
-                                            $query->select('criteria_id')
-                                            ->from(with(new Choice)->getTable())
-                                            ->where('suggestion', 1);
-                                        })
-                                        ->orderBy('id','DESC')
-                                        ->get();
+            $subcriterias = Criteria::where('group_criteria', '=', $criteria->id)
+                                    ->orderBy('id','DESC')
+                                    ->get();
             
             if (count($subcriterias) == 0) {
                 $criteria->global_weight = $criteria->partial_weight;

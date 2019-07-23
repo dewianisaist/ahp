@@ -73,13 +73,11 @@
                     @if (count($value["data"]) > 0)
                         @foreach ($value["data"] as $crit)
                             <tr>
-                                {!! Form::open(array('route' => 'criteriagroup.out','method'=>'POST')) !!}
-                                    <td width = "50px" align ="right" bgcolor="#FDFDFD"></td>
-                                    <td bgcolor="#FDFDFD"><li>{{ $crit->name }}</li></td>
-                                    <td bgcolor="#FDFDFD"></td>
-                                    <td bgcolor="#FDFDFD">{{ $crit->partial_weight }}</td>
-                                    <td bgcolor="#FDFDFD">{{ $crit->global_weight }}</td>
-                                {!! Form::close() !!}
+                                <td width = "50px" align ="right" bgcolor="#FDFDFD"></td>
+                                <td bgcolor="#FDFDFD"><li>{{ $crit->name }}</li></td>
+                                <td bgcolor="#FDFDFD"></td>
+                                <td bgcolor="#FDFDFD">{{ $crit->partial_weight }}</td>
+                                <td bgcolor="#FDFDFD">{{ $crit->global_weight }}</td>
                             </tr>
                         @endforeach
                     @endif
