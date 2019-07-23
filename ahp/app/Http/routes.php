@@ -61,13 +61,13 @@ Route::group(['middleware' => ['auth']], function() {
 	Route::patch('selections/{id}',['as'=>'selections.update','uses'=>'SelectionController@update','middleware' => ['permission:selection-edit']]);
 	
 	//criterias - tidak ada permission
-	Route::get('criterias',['as'=>'criterias.index','uses'=>'CriteriaController@index']);
-	Route::get('criterias/create',['as'=>'criterias.create','uses'=>'CriteriaController@create']);
-	Route::post('criterias/create',['as'=>'criterias.store','uses'=>'CriteriaController@store']);
-	Route::get('criterias/{id}',['as'=>'criterias.show','uses'=>'CriteriaController@show']);
-	Route::get('criterias/{id}/edit',['as'=>'criterias.edit','uses'=>'CriteriaController@edit']);
-	Route::patch('criterias/{id}',['as'=>'criterias.update','uses'=>'CriteriaController@update']);
-	Route::delete('criterias/{id}',['as'=>'criterias.destroy','uses'=>'CriteriaController@destroy']);
+	// Route::get('criterias',['as'=>'criterias.index','uses'=>'CriteriaController@index']);
+	// Route::get('criterias/create',['as'=>'criterias.create','uses'=>'CriteriaController@create']);
+	// Route::post('criterias/create',['as'=>'criterias.store','uses'=>'CriteriaController@store']);
+	// Route::get('criterias/{id}',['as'=>'criterias.show','uses'=>'CriteriaController@show']);
+	// Route::get('criterias/{id}/edit',['as'=>'criterias.edit','uses'=>'CriteriaController@edit']);
+	// Route::patch('criterias/{id}',['as'=>'criterias.update','uses'=>'CriteriaController@update']);
+	// Route::delete('criterias/{id}',['as'=>'criterias.destroy','uses'=>'CriteriaController@destroy']);
 
 	//preferences - tidak ada permission
 	Route::get('preferences',['as'=>'preferences.index','uses'=>'PreferenceController@index']);
@@ -89,14 +89,19 @@ Route::group(['middleware' => ['auth']], function() {
 	Route::post('authrole',['as'=>'authrole.store','uses'=>'AuthRoleController@store']);
 
 	//criteriagroup - ada permission
-	Route::get('criteriagroup',['as'=>'criteriagroup.index','uses'=>'CriteriaGroupController@index','middleware' => ['permission:criteriagroup-list|criteriagroup-create|criteriagroup-edit|criteriagroup-delete|criteriagroup-add|criteriagroup-out']]);
-	Route::get('criteriagroup/create',['as'=>'criteriagroup.create','uses'=>'CriteriaGroupController@create','middleware' => ['permission:criteriagroup-create']]);
-	Route::post('criteriagroup/create',['as'=>'criteriagroup.store','uses'=>'CriteriaGroupController@store','middleware' => ['permission:criteriagroup-create']]);
-	Route::get('criteriagroup/{id}/edit',['as'=>'criteriagroup.edit','uses'=>'CriteriaGroupController@edit','middleware' => ['permission:criteriagroup-edit']]);
-	Route::patch('criteriagroup/{id}/edit',['as'=>'criteriagroup.update','uses'=>'CriteriaGroupController@update','middleware' => ['permission:criteriagroup-edit']]);
-	Route::delete('criteriagroup/{id}',['as'=>'criteriagroup.destroy','uses'=>'CriteriaGroupController@destroy','middleware' => ['permission:criteriagroup-delete']]);
-	Route::post('criteriagroup/add',['as'=>'criteriagroup.add','uses'=>'CriteriaGroupController@add','middleware' => ['permission:criteriagroup-add']]);
-	Route::post('criteriagroup/out',['as'=>'criteriagroup.out','uses'=>'CriteriaGroupController@out','middleware' => ['permission:criteriagroup-out']]);
+	Route::get('criteria',['as'=>'criteria.index','uses'=>'CriteriaController@index']);
+	Route::get('criteria/create',['as'=>'criteria.create','uses'=>'CriteriaController@create']);
+	Route::post('criteria/create',['as'=>'criteria.store','uses'=>'CriteriaController@store']);
+	Route::get('criteria/{id}/edit',['as'=>'criteria.edit','uses'=>'CriteriaController@edit']);
+	Route::patch('criteria/{id}/edit',['as'=>'criteria.update','uses'=>'CriteriaController@update']);
+	Route::delete('criteria/{id}',['as'=>'criteria.destroy','uses'=>'CriteriaController@destroy']);
+
+	Route::get('criteria/{id}/sub',['as'=>'criteria.subedit','uses'=>'CriteriaController@subedit']);
+	Route::patch('criteria/{id}/sub',['as'=>'criteria.subupdate','uses'=>'CriteriaController@subupdate']);
+	Route::delete('criteria/{id}/sub',['as'=>'criteria.subdestroy','uses'=>'CriteriaController@subdestroy']);
+
+	// Route::post('criteria/add',['as'=>'criteria.add','uses'=>'CriteriaController@add']);
+	// Route::post('criteria/out',['as'=>'criteria.out','uses'=>'CriteriaController@out']);
 
 	//weight - tidak ada permission
 	Route::get('weights',['as'=>'weights.index','uses'=>'WeightController@index']);
