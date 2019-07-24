@@ -1,13 +1,13 @@
 <li {{ substr( \Request::route()->getName(), 0, 20 ) == 'manage_alternatives.' ? 'class=active' : '' }}>
-  <a href="{{ route('manage_alternatives.index') }}"><i class="fa fa-users"></i> <span>Data Pendaftar</span></a>
+  <a href="{{ route('manage_alternatives.index') }}"><i class="fa fa-users"></i><span>Data Pendaftar</span></a>
 </li>
 
 <li {{ substr( \Request::route()->getName(), 0, 9 ) == 'criteria.' ? 'class=active' : '' }}>
-  <a href="{{ route('criteria.index') }}"><i class="fa fa-list"></i> <span>Kriteria dan Subkriteria</span></a>
+  <a href="{{ route('criteria.index') }}"><i class="fa fa-list"></i><span>Kriteria</span></a>
 </li>
 
 <li {{ substr( \Request::route()->getName(), 0, 8 ) == 'weights.' ? 'class=active' : '' }}>
-  <a href="{{ route('weights.index') }}"><i class="fa fa-balance-scale"></i>  <span>Bobot</span></a>
+  <a href="{{ route('weights.index') }}"><i class="fa fa-balance-scale"></i><span>Bobot</span></a>
 </li>
 
 <li {{ explode( ".",\Request::route()->getName() )[0] == 'preferences' || 

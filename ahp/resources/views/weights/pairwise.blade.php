@@ -9,7 +9,7 @@
   Perbandingan Berpasangan
 </h1>
 <ol class="breadcrumb">
-  <li><a href=""><i class="fa fa-dashboard"></i> Home</a></li>
+  <li><a href="{{ route('manage_alternatives.index') }}"><i class="fa fa-dashboard"></i> Home</a></li>
   <li><a href="{{ route('weights.index') }}"><i class="fa fa-balance-scale"></i> Bobot</a></li>
   <li class="active">Perbandingan Berpasangan</li>
 </ol>

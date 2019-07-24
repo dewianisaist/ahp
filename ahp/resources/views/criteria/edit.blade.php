@@ -9,7 +9,7 @@
   Edit Kriteria/Subkriteria 
 </h1>
 <ol class="breadcrumb">
-  <li><a href=""><i class="fa fa-dashboard"></i> Home</a></li>
+  <li><a href="{{ route('manage_alternatives.index') }}"><i class="fa fa-dashboard"></i> Home</a></li>
   <li><a href="{{ route('criteria.index') }}"><i class="fa fa-list"></i> Kriteria</a></li>
   <li class="active">Edit Kriteria/Subkriteria</li>
 </ol>
