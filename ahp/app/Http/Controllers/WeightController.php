@@ -32,7 +32,7 @@ class WeightController extends Controller
                                     ->get();
             
             if (count($subcriterias) == 0) {
-                $criteria->global_weight = $criteria->partial_weight;
+                $criteria->global_weight = number_format($criteria->partial_weight, 3);
                 $criteria->save();
             }
 

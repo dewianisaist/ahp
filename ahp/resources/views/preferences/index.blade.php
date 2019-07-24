@@ -10,7 +10,7 @@
   <dfn><small>Control panel</small></dfn>
 </h1>
 <ol class="breadcrumb">
-  <li><a href=""><i class="fa fa-dashboard"></i> Home</a></li>
+  <li><a href="{{ route('manage_alternatives.index') }}"><i class="fa fa-dashboard"></i> Home</a></li>
   <li class="active">Tipe Preferensi</li>
 </ol>
 @endsection

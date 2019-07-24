@@ -69,7 +69,7 @@ Route::group(['middleware' => ['auth']], function() {
 	// Route::patch('criterias/{id}',['as'=>'criterias.update','uses'=>'CriteriaController@update']);
 	// Route::delete('criterias/{id}',['as'=>'criterias.destroy','uses'=>'CriteriaController@destroy']);
 
-	//preferences - tidak ada permission
+	//preferences - fix
 	Route::get('preferences',['as'=>'preferences.index','uses'=>'PreferenceController@index']);
 	Route::get('preferences/{id}/edit',['as'=>'preferences.edit','uses'=>'PreferenceController@edit']);
 	Route::patch('preferences/{id}',['as'=>'preferences.update','uses'=>'PreferenceController@update']);
@@ -97,7 +97,7 @@ Route::group(['middleware' => ['auth']], function() {
 	Route::delete('criteria/{id}',['as'=>'criteria.destroy','uses'=>'CriteriaController@destroy']);
 	Route::delete('criteria/{id}/sub',['as'=>'criteria.subdestroy','uses'=>'CriteriaController@subdestroy']);
 
-	//weight - tidak ada permission
+	//weight - fix
 	Route::get('weights',['as'=>'weights.index','uses'=>'WeightController@index']);
 	Route::get('weights/{id}/pairwise',['as'=>'weights.pairwise','uses'=>'WeightController@create']);
 	Route::patch('weights/{id}',['as'=>'weights.store','uses'=>'WeightController@store']);
