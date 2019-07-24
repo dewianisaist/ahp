@@ -62,14 +62,7 @@ class WeightController extends Controller
             $requestedId = $id;
         }
 
-        $criterias = Criteria::where('step', '=', '2')
-                                ->where('status', '=', '1')
-                                ->where('group_criteria', '=', $requestedId)
-                                ->whereNotIn('id', function($query){
-                                    $query->select('criteria_id')
-                                    ->from(with(new Choice)->getTable())
-                                    ->where('suggestion', 1);
-                                })
+        $criterias = Criteria::where('group_criteria', '=', $requestedId)
                                 ->orderBy('id','DESC')
                                 ->get();
 
@@ -133,14 +126,7 @@ class WeightController extends Controller
         }
 
         $input = $request->all();
-        $criterias = Criteria::where('step', '=', '2')
-                                ->where('status', '=', '1')
-                                ->where('group_criteria', '=', $requestedId)
-                                ->whereNotIn('id', function($query){
-                                    $query->select('criteria_id')
-                                    ->from(with(new Choice)->getTable())
-                                    ->where('suggestion', 1);
-                                })
+        $criterias = Criteria::where('group_criteria', '=', $requestedId)
                                 ->orderBy('id','DESC')
                                 ->get();
 
