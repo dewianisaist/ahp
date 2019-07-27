@@ -10,7 +10,7 @@
   <dfn><small>Control panel</small></dfn>
 </h1>
 <ol class="breadcrumb">
-  <li><a href=""><i class="fa fa-dashboard"></i> Home</a></li>
+  <li><a href="{{ route('manage_alternatives.index') }}"><i class="fa fa-dashboard"></i> Home</a></li>
   <li class="active">Manajemen Data Alternatif</li>
 </ol>
 @endsection
@@ -31,27 +31,21 @@
         @endif
 	
 		<br/>
-    	<table id="table_result_selection" class="table table-bordered table-striped">
+    	<table id="table_score" class="table table-bordered table-striped">
 			<thead>
 				<tr>
-					<th>No</th>
+					<th width="50px">No</th>
 					<th>Nama Pendaftar</th>
-					<th>Sub-Kejuruan</th>
-					<th>Tanggal Seleksi</th>
-					<th>Waktu Seleksi</th>
-					<th width="280px">Aksi</th>
+					<th>Aksi</th>
 				</tr>
 			</thead>
 			<tbody>
-				@foreach ($data as $key => $result_selection)
+				@foreach ($data as $key => $score)
 					<tr>
 						<td>{{ ++$i }}</td>
-						<td>{{ $result_selection->name_registrant }}</td>
-						<td>{{ $result_selection->name_sub_vocational }}</td>
-						<td>{{ $result_selection->date }}</td>
-						<td>{{ $result_selection->time }}</td>
+						<td>{{ $score->name }}</td>
 						<td>
-							<a class="btn btn-primary" href="{{ route('result_selection.assessment',$result_selection->id) }}">Penilaian</a>
+							<a class="btn btn-primary" href="{{ route('score.assessment',$score->id) }}">Penilaian</a>
 						</td>
 					</tr>
 				@endforeach
@@ -60,7 +54,7 @@
 		{!! $data->render() !!}
 
 		<br/>
-		{!! Form::open(array('route' => 'result_selection.count','method'=>'POST')) !!}
+		{!! Form::open(array('route' => 'score.count','method'=>'POST')) !!}
 			<button type="submit" class="btn btn-primary">Mulai Hitung Penilaian</button>
 		{!! Form::close() !!}
 	</div>

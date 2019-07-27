@@ -38,45 +38,51 @@
 				</div>
 				<div class="col-xs-12 col-sm-12 col-md-12">
 					<div class="form-group">
-						<strong>Tipe Preferensi:</strong>
-            {!! Form::select('preference', 
-              array(
-                  '1' => 'Tipe 1: Usual Criterion', 
-                  '2' => 'Tipe 2: U-shape Criterion',
-                  '3' => 'Tipe 3: V-shape Criterion',
-                  '4' => 'Tipe 4: Level Criterion',
-                  '5' => 'Tipe 5: V-shape with indifference Criterion',
-                  '6' => 'Tipe 6: Gaussian Criterion'
-              ), 
-              isset($preference->preference) ? $preference->preference : '', array('class' => 'form-control', 'id' => 'preference')) 
-            !!}
+						<strong>Informasi:</strong>
+						{!! Form::textarea('information', isset($preference->information) ? $preference->information : '', array('placeholder' => 'Informasi Konversi Kriteria','class' => 'form-control','style'=>'height:100px')) !!}
 					</div>
 				</div>
-        <div class="col-xs-12 col-sm-12 col-md-12">
+				<div class="col-xs-12 col-sm-12 col-md-12">
+					<div class="form-group">
+						<strong>Tipe Preferensi:</strong>
+						{!! Form::select('preference', 
+							array(
+								'1' => 'Tipe 1: Usual Criterion', 
+								'2' => 'Tipe 2: U-shape Criterion',
+								'3' => 'Tipe 3: V-shape Criterion',
+								'4' => 'Tipe 4: Level Criterion',
+								'5' => 'Tipe 5: V-shape with indifference Criterion',
+								'6' => 'Tipe 6: Gaussian Criterion'
+							), 
+							isset($preference->preference) ? $preference->preference : '', array('class' => 'form-control', 'id' => 'preference')) 
+						!!}
+					</div>
+				</div>
+        		<div class="col-xs-12 col-sm-12 col-md-12">
 					<div class="form-group">
 						<strong>Kaidah (Maks/Min):</strong>
-            {!! Form::select('max_min', 
-              array(
-                  'Maksimasi' => 'Maksimasi', 
-                  'Minimasi' => 'Minimasi',
-              ), 
-              isset($preference->max_min) ? $preference->max_min : '', array('class' => 'form-control')) 
-            !!}
+						{!! Form::select('max_min', 
+						array(
+							'Maksimasi' => 'Maksimasi', 
+							'Minimasi' => 'Minimasi',
+						), 
+						isset($preference->max_min) ? $preference->max_min : '', array('class' => 'form-control')) 
+						!!}
 					</div>
 				</div>
-        <div id="parameter_p" class="col-xs-12 col-sm-12 col-md-12">
+        		<div id="parameter_p" class="col-xs-12 col-sm-12 col-md-12">
 					<div class="form-group">
 						<strong>Parameter p:</strong>
 						{!! Form::text('parameter_p', isset($preference->parameter_p) ? $preference->parameter_p : '', array('placeholder' => 'Parameter p','class' => 'form-control')) !!}
 					</div>
 				</div>
-        <div id="parameter_q" class="col-xs-12 col-sm-12 col-md-12">
+        		<div id="parameter_q" class="col-xs-12 col-sm-12 col-md-12">
 					<div class="form-group">
 						<strong>Parameter q:</strong>
 						{!! Form::text('parameter_q', isset($preference->parameter_q) ? $preference->parameter_q : '', array('placeholder' => 'Parameter q','class' => 'form-control')) !!}
 					</div>
 				</div>
-        <div id="parameter_s" class="col-xs-12 col-sm-12 col-md-12">
+        		<div id="parameter_s" class="col-xs-12 col-sm-12 col-md-12">
 					<div class="form-group">
 						<strong>Parameter s:</strong>
 						{!! Form::text('parameter_s', isset($preference->parameter_s) ? $preference->parameter_s : '', array('placeholder' => 'Parameter s','class' => 'form-control')) !!}

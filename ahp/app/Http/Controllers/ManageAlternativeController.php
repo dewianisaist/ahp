@@ -16,8 +16,8 @@ class ManageAlternativeController extends Controller
      */
     public function index(Request $request)
     {
-        $data = Alternative::select('alternatives.id', 'alternatives.name', 'alternatives.date_birth', 'alternatives.last_education')
-                            ->orderBy('alternatives.name','ASC')
+        $data = Alternative::select('id', 'name', 'date_birth', 'last_education')
+                            ->orderBy('name','ASC')
                             ->paginate(10);
 
         return view('manage_alternatives.index',compact('data'))
@@ -82,8 +82,7 @@ class ManageAlternativeController extends Controller
      */
     public function show($id)
     {
-        $alternative = Alternative::select('*')
-                                    ->find($id);
+        $alternative = Alternative::find($id);
         
         return view('manage_alternatives.show',compact('alternative'));
     }

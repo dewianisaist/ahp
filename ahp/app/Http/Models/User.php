@@ -3,12 +3,9 @@
 namespace App\Http\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Zizaco\Entrust\Traits\EntrustUserTrait;
 
 class User extends Authenticatable
-{
-    use EntrustUserTrait;
-    
+{    
     /**
      * The attributes that are mass assignable.
      *
@@ -30,23 +27,4 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
-
-    public function roleId() {
-        if (session()->has('role_id')) {
-            return session('role_id');
-        } else {
-            return 0;
-        }
-    }
-
-    /**
-     * @param  int  $id
-     */
-    public function setRoleId($id) {
-        session(['role_id' => $id]);
-    }
-
-    public function registrant() {
-        return $this->hasOne('App\Http\Models\Registrant');
-    }
 }

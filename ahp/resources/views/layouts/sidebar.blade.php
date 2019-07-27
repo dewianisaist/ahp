@@ -11,7 +11,7 @@
 </li>
 
 <li {{ explode( ".",\Request::route()->getName() )[0] == 'preferences' || 
-  explode( ".",\Request::route()->getName() )[0] == 'result_selection' ||
+  explode( ".",\Request::route()->getName() )[0] == 'score' ||
   explode( ".",\Request::route()->getName() )[0] == 'result' 
   ? 'class=active treeview menu-open' : '' }}>
   <a href="{{ route('preferences.index') }}">
@@ -25,8 +25,8 @@
     <li {{ substr( \Request::route()->getName(), 0, 12 ) == 'preferences.' ? 'class=active' : '' }}>
       <a href="{{ route('preferences.index') }}"><i class="fa fa-hourglass-half"></i> Tipe Preferensi</a>
     </li>
-    <li {{ substr( \Request::route()->getName(), 0, 17 ) == 'result_selection.' ? 'class=active' : '' }}>
-      <a href="{{ route('result_selection.index') }}"><i class="fa fa-hourglass-half"></i> Data Alternatif</a>
+    <li {{ substr( \Request::route()->getName(), 0, 6 ) == 'score.' ? 'class=active' : '' }}>
+      <a href="{{ route('score.index') }}"><i class="fa fa-hourglass-half"></i> Data Alternatif</a>
     </li>
     <li {{ substr( \Request::route()->getName(), 0, 7 ) == 'result.' ? 'class=active' : '' }}>
       <a href="{{ route('result.index') }}"><i class="fa fa-hourglass-half"></i> Hasil</a>
