@@ -120,58 +120,37 @@ class ScoreController extends Controller
      */
     public function count()
     {
-        $selections = Selection::select('selections.*', 'users.name AS name_registrant', 'selection_schedules.date', 
-                                        'selection_schedules.time', 'sub_vocationals.name AS name_sub_vocational')
-                                    ->join('registrations', 'registrations.id', '=', 'selections.registration_id')
-                                    ->join('registrants', 'registrants.id', '=', 'registrations.registrant_id')
-                                    ->join('users', 'users.id', '=', 'registrants.user_id')
-                                    ->join('selection_schedules', 'selection_schedules.id', '=', 'selections.selection_schedule_id')
-                                    ->join('sub_vocationals', 'sub_vocationals.id', '=', 'selection_schedules.sub_vocational_id')
-                                    ->where(function($query){
-                                        $query->whereNull('selections.status')
-                                              ->orWhere('selections.status', '=', '');
-                                    })
-                                    ->orderBy('selections.id','DESC')
-                                    ->get();
-        // return $selections;
+        $alternatives = Alternative::orderBy('id','DESC')->get();
 
-        $selectionsId = array();
-        foreach ($selections as $selection) {
-            $selectionsId[] = $selection->id;
-            $selectionsData[$selection->id] = $selection;
+        $alternativesId = array();
+        foreach ($alternatives as $alternative) {
+            $alternativesId[] = $alternative->id;
+            $alternativesData[$alternative->id] = $alternative;
         }
-        // return $selectionsData[$selection->id]->name_sub_vocational;
 
         $tabel_alternative = array();
-        $criterias = Criteria::where('step', '=', '2')
-                                    ->where('status', '=', '1')
-                                    ->where('description', '<>', null)
-                                    ->whereNotIn('id', function($query){
-                                        $query->select('criteria_id')
-                                        ->from(with(new Choice)->getTable())
-                                        ->where('suggestion', 1);
-                                    })
-                                    ->orderBy('id','DESC')
-                                    ->get();
+        $criterias = Criteria::where('global_weight', '<>', null)
+                                ->orderBy('id','DESC')
+                                ->get();
 
         $criteriasData = array();
         foreach ($criterias as $criteria) {
             $criteriasData[$criteria->id] = $criteria;
         }
 
-        foreach ($selections as $selection) {
-            $tabel_alternative[$selection->id] = array();
+        foreach ($alternatives as $alternative) {
+            $tabel_alternative[$alternative->id] = array();
             foreach ($criterias as $criteria) {
-                $result_selection = ResultSelection::where('selection_id', '=', $selection->id)
-                                                    ->where('criteria_id', '=', $criteria->id)
-                                                    ->first();
+                $score = Score::where('alternative_id', '=', $alternative->id)
+                                ->where('criteria_id', '=', $criteria->id)
+                                ->first();
                                                     
-                // return $result_selection;
-                if ($result_selection == null) {
-                    return redirect()->route('result_selection.index')
-                                     ->with('failed','Hitung penilaian GAGAL! '. $selection->name_registrant . ' belum dinilai. Silahkan lakukan penilaian');
+                // return $score;
+                if ($score == null) {
+                    return redirect()->route('score.index')
+                                     ->with('failed','Hitung penilaian GAGAL! '. $alternative->name . ' belum dinilai. Silahkan lakukan penilaian');
                 } 
-                $tabel_alternative[$selection->id][$criteria->id] = $result_selection->value;
+                $tabel_alternative[$alternative->id][$criteria->id] = $score->value;
             }
         }
 
@@ -290,50 +269,50 @@ class ScoreController extends Controller
 
         $tabel_leaving = array();
         $tabel_entering = array();
-        $n = count($selectionsId);
-        foreach($selectionsId as $selectionId1) {
+        $n = count($alternativesId);
+        foreach($alternativesId as $alternativeId1) {
             $sum_row = 0;
             $sum_col = 0;
-            foreach($tabel_index[$selectionId1] as $value) {
+            foreach($tabel_index[$alternativeId1] as $value) {
                 $sum_row += $value;
             }
-            foreach($selectionsId as $selectionId2) {
-                $sum_col += $tabel_index[$selectionId2][$selectionId1];
+            foreach($alternativesId as $alternativeId2) {
+                $sum_col += $tabel_index[$alternativeId2][$alternativeId1];
             }
-            $tabel_leaving[$selectionId1] = number_format((1 / ($n-1)) * $sum_row, 5);
-            $tabel_entering[$selectionId1] = number_format((1 / ($n-1)) * $sum_col, 5);
+            $tabel_leaving[$alternativeId1] = number_format((1 / ($n-1)) * $sum_row, 5);
+            $tabel_entering[$alternativeId1] = number_format((1 / ($n-1)) * $sum_col, 5);
         }
         // return $tabel_entering;
         // return $tabel_leaving;
 
         $isComparable = true;
         $condition =array();
-        foreach($selectionsId as $selectionIdA) {
-            foreach($selectionsId as $selectionIdB) {
-                if ($selectionIdA < $selectionIdB) {
-                    $condition[$selectionIdA.",".$selectionIdB] = array();
-                    $condition[$selectionIdA.",".$selectionIdB]["A Ii B"] = false; 
-                    $condition[$selectionIdA.",".$selectionIdB]["A S+ B"] = false;
-                    $condition[$selectionIdA.",".$selectionIdB]["A S- B"] = false;
-                    $condition[$selectionIdA.",".$selectionIdB]["A Pi B"] = false;
-                    $condition[$selectionIdA.",".$selectionIdB]["A R B"] = true;
-                    $condition1 = ($tabel_leaving[$selectionIdA] == $tabel_leaving[$selectionIdB]) && ($tabel_entering[$selectionIdA] == $tabel_entering[$selectionIdB]);
-                    $condition2a = ($tabel_leaving[$selectionIdA] > $tabel_leaving[$selectionIdB]) || ($tabel_leaving[$selectionIdA] == $tabel_leaving[$selectionIdB]);
-                    $condition2b = ($tabel_entering[$selectionIdA] < $tabel_entering[$selectionIdB]) || ($tabel_entering[$selectionIdA] == $tabel_entering[$selectionIdB]);
+        foreach($alternativesId as $alternativeIdA) {
+            foreach($alternativesId as $alternativeIdB) {
+                if ($alternativeIdA < $alternativeIdB) {
+                    $condition[$alternativeIdA.",".$alternativeIdB] = array();
+                    $condition[$alternativeIdA.",".$alternativeIdB]["A Ii B"] = false; 
+                    $condition[$alternativeIdA.",".$alternativeIdB]["A S+ B"] = false;
+                    $condition[$alternativeIdA.",".$alternativeIdB]["A S- B"] = false;
+                    $condition[$alternativeIdA.",".$alternativeIdB]["A Pi B"] = false;
+                    $condition[$alternativeIdA.",".$alternativeIdB]["A R B"] = true;
+                    $condition1 = ($tabel_leaving[$alternativeIdA] == $tabel_leaving[$alternativeIdB]) && ($tabel_entering[$alternativeIdA] == $tabel_entering[$alternativeIdB]);
+                    $condition2a = ($tabel_leaving[$alternativeIdA] > $tabel_leaving[$alternativeIdB]) || ($tabel_leaving[$alternativeIdA] == $tabel_leaving[$alternativeIdB]);
+                    $condition2b = ($tabel_entering[$alternativeIdA] < $tabel_entering[$alternativeIdB]) || ($tabel_entering[$alternativeIdA] == $tabel_entering[$alternativeIdB]);
                     if ($condition1) {
-                        $condition[$selectionIdA.",".$selectionIdB]["A Ii B"] = true;
+                        $condition[$alternativeIdA.",".$alternativeIdB]["A Ii B"] = true;
                     }
                     if ($condition2a) {
-                        $condition[$selectionIdA.",".$selectionIdB]["A S+ B"] = true;
+                        $condition[$alternativeIdA.",".$alternativeIdB]["A S+ B"] = true;
                     }
                     if ($condition2b) {
-                        $condition[$selectionIdA.",".$selectionIdB]["A S- B"] = true;
+                        $condition[$alternativeIdA.",".$alternativeIdB]["A S- B"] = true;
                     }
                     if ($condition2a == $condition2b) {
-                        $condition[$selectionIdA.",".$selectionIdB]["A Pi B"] = true;
+                        $condition[$alternativeIdA.",".$alternativeIdB]["A Pi B"] = true;
                     }
-                    if ($condition[$selectionIdA.",".$selectionIdB]["A Pi B"] || $condition[$selectionIdA.",".$selectionIdB]["A Ii B"]) {
-                        $condition[$selectionIdA.",".$selectionIdB]["A R B"] = false;
+                    if ($condition[$alternativeIdA.",".$alternativeIdB]["A Pi B"] || $condition[$alternativeIdA.",".$alternativeIdB]["A Ii B"]) {
+                        $condition[$alternativeIdA.",".$alternativeIdB]["A R B"] = false;
                     } else {
                         $isComparable = false;
                     }
@@ -348,21 +327,20 @@ class ScoreController extends Controller
         //     return "Incomparable";
         // }
 
-        $sortedSelection = array();
+        $sortedAlternative = array();
         $rank = 1;
 
         if ($isComparable) {
             arsort($tabel_leaving);
             foreach ($tabel_leaving as $key=>$value) {
-                $sortedSelection[] = $key;
-                $selection = $selectionsData[$key];
-                $selection->final_score = $value;
-                $selection->ranking = $rank;
-                $selection->status = "Selesai";
-                $selection->save();
+                $sortedAlternative[] = $key;
+                $alternative = $alternativesData[$key];
+                $alternative->score_promethee = $value;
+                $alternative->rank_promethee = $rank;
+                $alternative->save();
                 $rank ++;
             }
-            // return $sortedSelection;
+            // return $sortedAlternative;
         } else {
             $netflow = array();
             foreach ($tabel_leaving as $key=>$value) {
@@ -371,19 +349,18 @@ class ScoreController extends Controller
             
             arsort($netflow);
             foreach ($netflow as $key=>$value) {
-                $sortedSelection[] = $key;
-                $selection = $selectionsData[$key];
-                $selection->final_score = $value;
-                $selection->ranking = $rank;
-                $selection->status = "Selesai";
-                $selection->save();
+                $sortedAlternative[] = $key;
+                $alternative = $alternativesData[$key];
+                $alternative->score_promethee = $value;
+                $alternative->rank_promethee = $rank;
+                $alternative->save();
                 $rank ++;
             }
         }
         //  return $netflow;
-        // return $sortedSelection;
+        // return $sortedAlternative;
 
-        return redirect()->route('result_selection.index')
+        return redirect()->route('score.index')
                          ->with('success','Hitung penilaian berhasil. Lihat hasil di menu "Hasil"');
     }
 }

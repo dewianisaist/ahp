@@ -22,19 +22,15 @@ Hasil Seleksi Peserta Pelatihan
         <tr>
           <th>Peringkat</th>
           <th>Nama Pendaftar</th>
-          <th>Sub-Kejuruan</th>
-          <th>Tanggal dan Waktu Seleksi</th>
-          <th>Nilai Seleksi</th>
+          <th>Nilai PROMETHEE</th>
         </tr>
       </thead>
       <tbody>
         @foreach ($result as $key => $result_selection)
           <tr>
             <td>{{ ++$i }}</td>
-            <td>{{ $result_selection->name_registrant }}</td>
-            <td>{{ $result_selection->name_sub_vocational }}</td>
-            <td>{{ $result_selection->date }} dan {{ $result_selection->time }}</td>
-            <td>{{ $result_selection->final_score }}</td>
+            <td>{{ $result_selection->name }}</td>
+            <td>{{ $result_selection->score_promethee }}</td>
           </tr>
         @endforeach
       </tbody>
