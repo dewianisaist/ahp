@@ -6,11 +6,11 @@
  
 @section('content_header')
 <h1>
-Hasil Seleksi Peserta Pelatihan
+Hasil Ranking PROMETHEE
 </h1>
 <ol class="breadcrumb">
   <li><a href=""><i class="fa fa-dashboard"></i> Home</a></li>
-  <li class="active">Hasil Seleksi Peserta Pelatihan</li>
+  <li class="active">Hasil Ranking PROMETHEE</li>
 </ol>
 @endsection
 

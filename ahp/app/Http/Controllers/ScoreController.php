@@ -252,9 +252,9 @@ class ScoreController extends Controller
 
         $tabel_index = array();
         foreach ($tabel_derajat as $alternatives=>$data_index) {
-            $alternativesId = explode(",",$alternatives);
-            $id1 = $alternativesId[0];
-            $id2 = $alternativesId[1];
+            $alternativeId = explode(",",$alternatives);
+            $id1 = $alternativeId[0];
+            $id2 = $alternativeId[1];
             $tabel_index[$id1][$id2] = 0;
             $tabel_index[$id1][$id1] = 0;
             $tabel_index[$id2][$id2] = 0;

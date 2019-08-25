@@ -29,7 +29,7 @@
       <a href="{{ route('score.index') }}"><i class="fa fa-hourglass-half"></i> Data Alternatif</a>
     </li>
     <li {{ substr( \Request::route()->getName(), 0, 7 ) == 'result.' ? 'class=active' : '' }}>
-      <a href="{{ route('result.index') }}"><i class="fa fa-hourglass-half"></i> Hasil</a>
+      <a href="{{ route('result.index') }}"><i class="fa fa-hourglass-half"></i> Hasil Ranking PROMETHEE</a>
     </li>
   </ul>
 </li>
