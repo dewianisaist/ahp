@@ -56,6 +56,8 @@ Route::group(['middleware' => ['auth']], function() {
 	Route::patch('score/{id}',['as'=>'score.store','uses'=>'ScoreController@store']);
 	Route::post('score/count',['as'=>'score.count','uses'=>'ScoreController@count']);
 
+	Route::get('ahp_uji',['as'=>'ahp_uji.index', 'uses'=>'AhpUjiController@index']);
+
 	//result - tidak ada permission
 	Route::get('result',['as'=>'result.index','uses'=>'ResultController@index']);
 });

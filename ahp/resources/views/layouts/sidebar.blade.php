@@ -11,8 +11,7 @@
 </li>
 
 <li {{ explode( ".",\Request::route()->getName() )[0] == 'preferences' || 
-  explode( ".",\Request::route()->getName() )[0] == 'score' ||
-  explode( ".",\Request::route()->getName() )[0] == 'result' 
+  explode( ".",\Request::route()->getName() )[0] == 'score'
   ? 'class=active treeview menu-open' : '' }}>
   <a href="{{ route('preferences.index') }}">
     <i class="fa fa-hourglass-half"></i>
@@ -28,8 +27,13 @@
     <li {{ substr( \Request::route()->getName(), 0, 6 ) == 'score.' ? 'class=active' : '' }}>
       <a href="{{ route('score.index') }}"><i class="fa fa-hourglass-half"></i> Data Alternatif</a>
     </li>
-    <li {{ substr( \Request::route()->getName(), 0, 7 ) == 'result.' ? 'class=active' : '' }}>
-      <a href="{{ route('result.index') }}"><i class="fa fa-hourglass-half"></i> Hasil Ranking PROMETHEE</a>
-    </li>
   </ul>
+</li>
+
+<li {{ substr( \Request::route()->getName(), 0, 7 ) == 'result.' ? 'class=active' : '' }}>
+  <a href="{{ route('result.index') }}"><i class="fa fa-hourglass-half"></i> Hasil Ranking PROMETHEE</a>
+</li>
+
+<li {{ substr( \Request::route()->getName(), 0, 8 ) == 'ahp_uji.' ? 'class=active' : '' }}>
+  <a href="{{ route('ahp_uji.index') }}"><i class="fa fa-hourglass-half"></i> Hasil Ranking AHP</a>
 </li>
